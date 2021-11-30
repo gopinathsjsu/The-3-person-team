@@ -31,10 +31,13 @@ def login_page(email):
     print("query result: ", result)
     
     cursor.close()
-    conn.close()        
-    return jsonify(
+    conn.close()    
+
+    response = jsonify(
         password=result[0]
     )
+    response.headers.add('Access-Control-Allow-Origin', '*')
+    return response
 
 """
 @app.route('/student/add', methods=['GET', 'POST'])
