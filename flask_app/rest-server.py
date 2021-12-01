@@ -27,9 +27,12 @@ def convert_timedelta(timedelta):
 def welcome():
     return "Hello World!"
 
-@app.route('/login/<string:UserID>', methods=['GET'])
-def login_page(UserID):
+@app.route('/login', methods=['POST'])
+def login_page():
     conn = connect_db()
+    
+    UserID  = request.json['UserID']
+    password = request.json['password']
     
     cursor = conn.cursor()
     statement = "SELECT Password FROM User WHERE UserID = '"+UserID+"'"
@@ -38,14 +41,16 @@ def login_page(UserID):
     cursor.execute(statement)
     result = cursor.fetchone()
     
-    print("query result: ", result)
+    #print("query result: ", result)
     
     cursor.close()
-    conn.close()    
+    conn.close()  
+    
+    login_result = result[0] == password
 
     response = jsonify(
-        password=result[0]
-    )
+        {"loginSucess": login_result})
+        
     response.headers.add('Access-Control-Allow-Origin', '*')
     return response
 
@@ -284,6 +289,48 @@ def change_user_info_page(UserID):
     }
 
     response = jsonify(response)
+    response.headers.add('Access-Control-Allow-Origin', '*')
+    
+    return response
+    
+@app.route('/purchase', methods=['POST'])
+def purchase_ticket_page():
+    conn = connect_db()
+
+    email = request.json['email']
+    flightNumber = request.json['flightNum']
+    seatRow = request.json['seatRow']
+    seatLetter = request.json['seatLetter']
+    payment = request.json['payment']
+    
+    #print(start, destination, startDate)
+    cursor = conn.cursor()
+    
+    cursor.execute("SELECT UserID from User WHERE Email = '"+email+"'")
+    UserID = cursor.fetchone()[0]
+    
+    cursor.execute("SELECT MAX(reservationNumber) from Reservation")
+    reservationNumber = cursor.fetchone()[0] + 1
+    
+    statement = "INSERT INTO Reservation VALUES( "+str(reservationNumber)+", '"+email+"', "+str(seatRow)+", '"+seatLetter+"', '"+flightNumber+"', '"+payment+"', '"+UserID+"')"
+    
+    cursor.execute(statement)
+    
+    seat_statement = "UPDATE Seat SET Passenger = '"+UserID+"' WHERE seatRow = "+str(seatRow)+" AND seatLetter = '"+seatLetter+"' AND flightNumber = '"+flightNumber+"'"
+    #print(seat_statement)
+    
+    cursor.execute(seat_statement)
+    
+    flight_statement = "UPDATE Flight SET availableSeats = availableSeats-1 WHERE flightNumber = '"+flightNumber+"'"
+    
+    cursor.execute(flight_statement)
+    
+    conn.commit()
+    
+    cursor.close()
+    conn.close()       
+
+    response = jsonify({'reservationNumber': reservationNumber})
     response.headers.add('Access-Control-Allow-Origin', '*')
     
     return response
