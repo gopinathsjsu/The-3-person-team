@@ -35,7 +35,7 @@ API name: SearchFlight .
   
 API name: SearchSeat . 
   * Method: GET
-  * Route:/seats/(flight number)
+  * Route:/seats/(flightNumber)
   * Input: flightNumber. 
   * Return: JSON(list of Seat: {Row, Letter, Passenger})
 
@@ -53,7 +53,7 @@ API name: findOrders .
   * Method: GET
   * Route: /order/(userID)
   * Input: userID. 
-  * Return: JSON(list of orders: {Email, flightNumber, seatRow, seatLetter, Payment})
+  * Return: JSON(list of orders: {reservationNumber, Email, flightNumber, seatRow, seatLetter, Payment})
 
 
 
