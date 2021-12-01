@@ -6,3 +6,6 @@ curl -i -H "Content-Type: application/json" -X POST -d '{"email":"xyli@sjsu.edu"
 
 Search empty seats:
 curl -i http://localhost:5000/searchseat/DL163
+
+Login:
+curl -i -H "Content-Type: application/json" -X POST -d '{"UserID":"xyl","password":"f"}' http://localhost:5000/login
