@@ -23,13 +23,13 @@ API name: getRewards.
   * Input: UserID
   * Return: JSON({Rewards})
 
-**_API name: changeinfo . _**
+**_API name: changeinfo ._**
   * Method: POST
   * Route: /(userID)/edit
   * Input: JSON({email, firstname, lastname, password}). 
   * Return: JSON({email, firstname, lastname, password})
 
-**_API name: SearchFlight . _**
+**_API name: SearchFlight ._**
   * Method: POST
   * Route:/search-results
   * Input: JSON({start, destination, startDate, arrivalDate, adults}) .
