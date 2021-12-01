@@ -9,3 +9,6 @@ curl -i http://localhost:5000/searchseat/DL163
 
 Login:
 curl -i -H "Content-Type: application/json" -X POST -d '{"UserID":"xyl","password":"f"}' http://localhost:5000/login
+
+Purchase:
+curl -i -H "Content-Type: application/json" -X POST -d '{"flightNum":"DL165", "email":"xinyu.li@sjsu.edu", "seatRow":3, "seatLetter":"A", "payment":"qwert"}' http://localhost:5000/purchase
