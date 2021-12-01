@@ -39,6 +39,141 @@ def login_page(email):
     response.headers.add('Access-Control-Allow-Origin', '*')
     return response
 
+@app.route('/getInfo/<int:userID>', methods=['GET'])
+def user_page(userID):
+    conn = MySQLdb.connect (host = "mysql-db-instance-2.c9wxfdtpfr4m.us-east-1.rds.amazonaws.com",
+                        user = USERNAME,
+                        passwd = PASSWORD,
+                        db = DB_NAME, 
+			port = 3306)
+    cursor = conn.cursor()
+    
+    #TODO
+    statement = "SELECT Password FROM User WHERE userID = userID"
+    #print(statement)
+    
+    cursor.execute(statement)
+    result = cursor.fetchone()
+    
+    print("query result: ", result)
+    
+    cursor.close()
+    conn.close()    
+
+    response = jsonify(
+        password=result[0]
+    )
+    response.headers.add('Access-Control-Allow-Origin', '*')
+    return response
+
+@app.route('/getRewards/<int:userID>', methods=['GET'])
+def reward_page(userID):
+    conn = MySQLdb.connect (host = "mysql-db-instance-2.c9wxfdtpfr4m.us-east-1.rds.amazonaws.com",
+                        user = USERNAME,
+                        passwd = PASSWORD,
+                        db = DB_NAME, 
+			port = 3306)
+    cursor = conn.cursor()
+    
+    #TODO
+    statement = "SELECT Rewards FROM User WHERE userID = userID"
+    #print(statement)
+    
+    cursor.execute(statement)
+    result = cursor.fetchone()
+    
+    print("query result: ", result)
+    
+    cursor.close()
+    conn.close()    
+
+    response = jsonify(
+        password=result[0]
+    )
+    response.headers.add('Access-Control-Allow-Origin', '*')
+    return response
+
+@app.route('/searchseat/<string:flightNumber>', methods=['GET'])
+def search_seat(flightNumber):
+    conn = MySQLdb.connect (host = "mysql-db-instance-2.c9wxfdtpfr4m.us-east-1.rds.amazonaws.com",
+                        user = USERNAME,
+                        passwd = PASSWORD,
+                        db = DB_NAME, 
+			port = 3306)
+    cursor = conn.cursor()
+    
+    #TODO
+    statement = "SELECT seats FROM flight WHERE flightNumber = flightNumber"
+    #print(statement)
+    
+    cursor.execute(statement)
+    result = cursor.fetchone()
+    
+    print("query result: ", result)
+    
+    cursor.close()
+    conn.close()    
+
+    response = jsonify(
+        password=result[0]
+    )
+    response.headers.add('Access-Control-Allow-Origin', '*')
+    return response
+
+@app.route('/findorder/<string:reservationNumber>', methods=['GET'])
+def find_order(reservationNumber):
+    conn = MySQLdb.connect (host = "mysql-db-instance-2.c9wxfdtpfr4m.us-east-1.rds.amazonaws.com",
+                        user = USERNAME,
+                        passwd = PASSWORD,
+                        db = DB_NAME, 
+			port = 3306)
+    cursor = conn.cursor()
+    
+    #TODO
+    statement = "SELECT order FROM order WHERE reservationNumber = reservationNumber"
+    #print(statement)
+    
+    cursor.execute(statement)
+    result = cursor.fetchone()
+    
+    print("query result: ", result)
+    
+    cursor.close()
+    conn.close()    
+
+    response = jsonify(
+        password=result[0]
+    )
+    response.headers.add('Access-Control-Allow-Origin', '*')
+    return response
+
+@app.route('/findorders/<int:userID>', methods=['GET'])
+def find_orders(userID):
+    conn = MySQLdb.connect (host = "mysql-db-instance-2.c9wxfdtpfr4m.us-east-1.rds.amazonaws.com",
+                        user = USERNAME,
+                        passwd = PASSWORD,
+                        db = DB_NAME, 
+			port = 3306)
+    cursor = conn.cursor()
+    
+    #TODO
+    statement = "SELECT orders FROM order WHERE userID = userID"
+    #print(statement)
+    
+    cursor.execute(statement)
+    result = cursor.fetchone()
+    
+    print("query result: ", result)
+    
+    cursor.close()
+    conn.close()    
+
+    response = jsonify(
+        password=result[0]
+    )
+    response.headers.add('Access-Control-Allow-Origin', '*')
+    return response
+    
 """
 @app.route('/student/add', methods=['GET', 'POST'])
 def student_add_page():
