@@ -42,7 +42,7 @@ API name: getRewards.
   * Input: flightNumber. 
   * Return: JSON(list of Seat: {Row, Letter, Passenger})
 
-API name: purchacseTicket. 
+**_API name: purchacseTicket._** 
   * Method: POST
   * Route: /purchase
   * Input: JSON({flightNum, email, seatRow, seatLetter, payment})
