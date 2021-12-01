@@ -3,3 +3,6 @@ curl -i -H "Content-Type: application/json" -X POST -d '{"start":"Atlanta", "des
 
 Change Info:
 curl -i -H "Content-Type: application/json" -X POST -d '{"email":"xyli@sjsu.edu", "firstname":"XYu", "lastname":"Li", "password":"pswd"}' http://localhost:5000/xyl/edit
+
+Search empty seats:
+curl -i http://localhost:5000/searchseat/DL163
