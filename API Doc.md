@@ -9,6 +9,7 @@ API name: Register .
   * Route: /register
   * Input: JSON({email, password, firstname, lastname}). 
   * Return: JSON({UserID})
+    * UserID: first part of email, before @ 
 
 API name: getInfo .
   * Method: GET
