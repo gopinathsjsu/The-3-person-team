@@ -1,0 +1,2 @@
+Find Flights:
+curl -i -H "Content-Type: application/json" -X POST -d '{"start":"Atlanta", "destination":"San Jose", "startDate":"2019-05-24", "arrivalDate":"2019-05-24", "adults":21}' http://localhost:5000/search-results
