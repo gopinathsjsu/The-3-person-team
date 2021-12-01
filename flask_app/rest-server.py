@@ -105,28 +105,32 @@ def reward_page(userID):
 
 @app.route('/searchseat/<string:flightNumber>', methods=['GET'])
 def search_seat(flightNumber):
-    conn = MySQLdb.connect (host = "mysql-db-instance-2.c9wxfdtpfr4m.us-east-1.rds.amazonaws.com",
-                        user = USERNAME,
-                        passwd = PASSWORD,
-                        db = DB_NAME, 
-			port = 3306)
+    conn = connect_db()
     cursor = conn.cursor()
     
-    #TODO
-    statement = "SELECT seats FROM flight WHERE flightNumber = flightNumber"
+    statement = "SELECT * FROM Seat WHERE flightNumber = '"+flightNumber+"' AND Passenger IS NULL"
     #print(statement)
     
     cursor.execute(statement)
-    result = cursor.fetchone()
+    results = cursor.fetchall()
     
-    print("query result: ", result)
+    seatlist=[]
+    for item in results:
+        seat={}
+        
+        seat['Row'] = item[0]
+        seat['Letter'] = item[1]
+        if item[3] is None:
+            seat['Passenger'] = "Empty"
+        else:
+           seat['Passenger'] = item[3]
+
+        seatlist.append(seat)
     
     cursor.close()
     conn.close()    
 
-    response = jsonify(
-        password=result[0]
-    )
+    response = jsonify({'seats': seatlist})
     response.headers.add('Access-Control-Allow-Origin', '*')
     return response
 
@@ -249,6 +253,37 @@ def register_page():
     conn.close()       
 
     response = jsonify({'UserID': userID})
+    response.headers.add('Access-Control-Allow-Origin', '*')
+    
+    return response
+    
+@app.route('/<string:UserID>/edit', methods=['POST'])
+def change_user_info_page(UserID):
+    conn = connect_db()
+
+    email = request.json['email']
+    firstName = request.json['firstname']
+    lastName = request.json['lastname']
+    password = request.json['password']
+    
+    cursor = conn.cursor()
+    statement = "UPDATE User SET Email = '"+email+"', Password = '"+password+"', firstName = '"+firstName+"', lastName = '"+lastName+"' WHERE UserID = '"+UserID+"'"
+    #print(statement)
+    
+    cursor.execute(statement)
+    conn.commit()
+    
+    cursor.close()
+    conn.close()  
+        
+    response = {
+        "email": email,
+        "firstname": firstName,
+        "lastname": lastName,
+        "password": password
+    }
+
+    response = jsonify(response)
     response.headers.add('Access-Control-Allow-Origin', '*')
     
     return response
