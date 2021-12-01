@@ -10,19 +10,29 @@ DB_NAME = 'mytestdb'
     
 app = Flask(__name__, static_url_path="")
 
-@app.route('/', methods=['GET', 'POST'])
-def welcome():
-    return "Hello World!"
-
-@app.route('/login/<string:email>', methods=['GET'])
-def login_page(email):
-    conn = MySQLdb.connect (host = "mysql-db-instance-2.c9wxfdtpfr4m.us-east-1.rds.amazonaws.com",
+def connect_db():
+    return MySQLdb.connect (host = "mysql-db-instance-2.c9wxfdtpfr4m.us-east-1.rds.amazonaws.com",
                         user = USERNAME,
                         passwd = PASSWORD,
                         db = DB_NAME, 
 			port = 3306)
+            
+def convert_timedelta(timedelta):
+    seconds = timedelta.seconds
+    m, s = divmod(seconds, 60)
+    h, m = divmod(m, 60)
+    return '{:d}:{:02d}:{:02d}'.format(h, m, s)
+
+@app.route('/', methods=['GET', 'POST'])
+def welcome():
+    return "Hello World!"
+
+@app.route('/login/<string:UserID>', methods=['GET'])
+def login_page(UserID):
+    conn = connect_db()
+    
     cursor = conn.cursor()
-    statement = "SELECT Password FROM User WHERE Email = '"+email+"'"
+    statement = "SELECT Password FROM User WHERE UserID = '"+UserID+"'"
     #print(statement)
     
     cursor.execute(statement)
@@ -174,35 +184,43 @@ def find_orders(userID):
     response.headers.add('Access-Control-Allow-Origin', '*')
     return response
     
-"""
-@app.route('/student/add', methods=['GET', 'POST'])
-def student_add_page():
-    if request.method == 'POST':    
-        conn = sqlite3.connect('college.sqlite')
+@app.route('/search-results', methods=['GET'])
+def flight_results_page():
+    conn = connect_db()
 
-        statement = "INSERT INTO student (STUDENT_ID,NAME,DOB,PHOTO) VALUES ("+\
-                    request.form['studentID']+", '"+\
-                    request.form['studentName']+"', '"+\
-                    request.form['studentDOB']+"');";
-        
-        result = conn.execute(statement);
-        conn.commit()
-        conn.close()
-
-        return redirect('/')
-    else:
-        return render_template('add.html')
-
-
-@app.route('/student/delete/<int:student_id>', methods=['GET'])
-def delete_student_process(student_id):
+    start  = request.args.get('departure', None)
+    destination  = request.args.get('destination', None)
+    startDate  = request.args.get('date', None)
+    #print(start, destination, startDate)
     
-    conn = sqlite3.connect('college.sqlite')
-    results = conn.execute("DELETE FROM student WHERE STUDENT_ID="+str(student_id)+";");
-    conn.commit()
+    cursor = conn.cursor()
+    statement = "SELECT * FROM Flight WHERE Start = '"+start+"' AND Destination = '"+destination+"' AND startDate = '"+startDate+"'"
+    #print(statement)
     
-    return redirect('/')
-"""
+    cursor.execute(statement)
+    results = cursor.fetchall()
+    
+    flightlist=[]
+    for item in results:
+        flight={}
+        flight['flightNumber'] = item[0]
+        flight['Start'] = item[1]
+        flight['Destination'] = item[2]
+        flight['startDate'] = item[3]
+        flight['startTime'] = convert_timedelta(item[4])
+        flight['arrivalDate'] = item[5]
+        flight['arrivalTime'] = convert_timedelta(item[6])
+        flightlist.append(flight)
+    
+    # print("query result: ", result)
+    
+    cursor.close()
+    conn.close()       
+
+    response = jsonify({'flights': flightlist})
+    response.headers.add('Access-Control-Allow-Origin', '*')
+    
+    return response
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', debug=True, port=5000)
