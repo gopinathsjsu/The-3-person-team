@@ -221,6 +221,33 @@ def flight_results_page():
     response.headers.add('Access-Control-Allow-Origin', '*')
     
     return response
+    
+@app.route('/register', methods=['POST'])
+def register_page():
+    conn = connect_db()
+
+    email = request.json['email']
+    password = request.json['password']
+    firstName = request.json['firstname']
+    lastName = request.json['lastname']
+    userID = email.split("@")[0]
+    
+    #print(start, destination, startDate)
+    
+    cursor = conn.cursor()
+    statement = "INSERT INTO User VALUES( '"+email+"', '"+password+"', '"+firstName+"', '"+lastName+"', 0, 'Customer', '"+userID+"')"
+    print(statement)
+    
+    cursor.execute(statement)
+    conn.commit()
+    
+    cursor.close()
+    conn.close()       
+
+    response = jsonify({'UserID': userID})
+    response.headers.add('Access-Control-Allow-Origin', '*')
+    
+    return response
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', debug=True, port=5000)
