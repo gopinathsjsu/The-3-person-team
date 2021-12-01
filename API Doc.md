@@ -64,7 +64,7 @@ API name: editReservation .
   * Method: POST
   * Route: /order/update
   * Input: JSON({email, reservationNumber, seatRow, seatLetter}). 
-  * Return: JSON(list of orders: {reservationNumber, Email, flightNumber, seatRow, seatLetter, Payment})
+  * Return: JSON({email, reservationNumber, seatRow, seatLetter})
 
 
 
