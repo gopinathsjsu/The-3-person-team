@@ -1,10 +1,10 @@
-API name: Login . 
+~~API name: Login . ~~
   * Method: GET
   * Route: /login/(userID)
   * Input: userID. 
   * Return: Password
 
-API name: Register . 
+~~API name: Register . ~~
   * Method: POST
   * Route: /register
   * Input: JSON({email, password, firstname, lastname}). 
@@ -23,13 +23,13 @@ API name: getRewards.
   * Input: UserID
   * Return: JSON({Rewards})
 
-API name: changeinfo . 
+~~API name: changeinfo . ~~
   * Method: POST
   * Route: /(userID)/edit
   * Input: JSON({email, firstname, lastname, password}). 
   * Return: JSON({email, firstname, lastname, password})
 
-API name: SearchFlight . 
+~~API name: SearchFlight . ~~
   * Method: POST
   * Route:/search-results
   * Input: JSON({start, destination, startDate, arrivalDate, adults}) .
