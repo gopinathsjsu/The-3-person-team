@@ -30,10 +30,9 @@ API name: changeinfo .
   * Return: JSON({email, firstname, lastname, password})
 
 API name: SearchFlight . 
-  * Method: GET
-  * Route:/search-results?departure=(departure)&destination=(destination)&date=(date, YYYY-MM-DD)
-    * use query params
-  * Input: Departure,destination, Date. 
+  * Method: POST
+  * Route:/search-results
+  * Input: JSON({start, destination, startDate, arrivalDate, adults}) .
   * Return: JSON(list of flight:{flightNumber, Start, Destination, startDate, startTime, arrivalDate, arrivalTime})
   
 API name: SearchSeat . 
