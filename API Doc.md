@@ -65,6 +65,12 @@ API name: editReservation .
   * Route: /order/update
   * Input: JSON({email, reservationNumber, seatRow, seatLetter}). 
   * Return: JSON({email, reservationNumber, seatRow, seatLetter})
+ 
+API name: cancelReservation . 
+  * Method: POST
+  * Route: /order/cancel
+  * Input: JSON({email, reservationNumber}). 
+  * Return: JSON({email, reservationNumber})
 
 
 
