@@ -184,13 +184,14 @@ def find_orders(userID):
     response.headers.add('Access-Control-Allow-Origin', '*')
     return response
     
-@app.route('/search-results', methods=['GET'])
+@app.route('/search-results', methods=['POST'])
 def flight_results_page():
     conn = connect_db()
 
-    start  = request.args.get('departure', None)
-    destination  = request.args.get('destination', None)
-    startDate  = request.args.get('date', None)
+    start  = request.json['start']
+    destination  = request.json['destination']
+    startDate  = request.json['startDate']
+    adults = request.json['adults']
     #print(start, destination, startDate)
     
     cursor = conn.cursor()
@@ -203,14 +204,17 @@ def flight_results_page():
     flightlist=[]
     for item in results:
         flight={}
-        flight['flightNumber'] = item[0]
-        flight['Start'] = item[1]
-        flight['Destination'] = item[2]
-        flight['startDate'] = item[3]
-        flight['startTime'] = convert_timedelta(item[4])
-        flight['arrivalDate'] = item[5]
-        flight['arrivalTime'] = convert_timedelta(item[6])
-        flightlist.append(flight)
+        if item[8] >= adults: #availableSeats
+            flight['flightNumber'] = item[0]
+            flight['Start'] = item[1]
+            flight['Destination'] = item[2]
+            flight['startDate'] = item[3]
+            flight['startTime'] = convert_timedelta(item[4])
+            flight['arrivalDate'] = item[5]
+            flight['arrivalTime'] = convert_timedelta(item[6])
+            flight['Price'] = item[7]
+            flight['availableSeats'] = item[8]
+            flightlist.append(flight)
     
     # print("query result: ", result)
     
