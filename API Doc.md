@@ -38,7 +38,7 @@ API name: getRewards.
   
 **_API name: SearchSeat ._**
   * Method: GET
-  * Route:/seats/(flightNumber)
+  * Route:/searchseat/(flightNumber)
   * Input: flightNumber. 
   * Return: JSON(list of Seat: {Row, Letter, Passenger})
 
