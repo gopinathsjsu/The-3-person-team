@@ -6,9 +6,9 @@ API name: Login .
 
 API name: Register . 
   * Method: POST
-  * Route: /register/
-  * Input: Fristname,Lastname, Zipcode, PhoneNumber, email. 
-  * Return: UserID
+  * Route: /register
+  * Input: JSON({email, password, firstname, lastname}). 
+  * Return: JSON({UserID})
 
 API name: getInfo .
   * Method: GET
@@ -18,13 +18,15 @@ API name: getInfo .
 
 API name: getRewards.
   * Method: GET
-  * Route: /(userID)
+  * Route: /(userID)/rewards
   * Input: UserID
   * Return: JSON({Rewards})
 
 API name: changeinfo . 
-  * Method: GET, POST
-  * Input: UserID. Return: userInfomation
+  * Method: POST
+  * Route: /(userID)/edit
+  * Input: JSON({email, firstname, lastname, password}). 
+  * Return: JSON({email, firstname, lastname, password})
 
 API name: SearchFlight . 
   * Method: GET
@@ -40,8 +42,10 @@ API name: SearchSeat .
   * Return: JSON(list of Seat: {Row, Letter, Passenger})
 
 API name: purchacseTicket. 
-  * Method: GET, POST
-  * Input: flightNumber,seatNumber. Return: orderID
+  * Method: POST
+  * Route: /purchase
+  * Input: JSON({flightNum, email, seatRow, seatLetter, payment})
+  * Return: JSON({reservationNumber})
 
 API name: findOrder . 
   * Method: GET
@@ -54,6 +58,13 @@ API name: findOrders .
   * Route: /order/(userID)
   * Input: userID. 
   * Return: JSON(list of orders: {reservationNumber, Email, flightNumber, seatRow, seatLetter, Payment})
+
+API name: editReservation . 
+  * Method: POST
+  * Route: /order/update
+  * Input: JSON({email, reservationNumber, seatRow, seatLetter}). 
+  * Return: JSON(list of orders: {reservationNumber, Email, flightNumber, seatRow, seatLetter, Payment})
+
 
 
 
