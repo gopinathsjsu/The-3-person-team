@@ -1,8 +1,9 @@
 **_API name: Login ._**
-  * Method: GET
-  * Route: /login/(userID)
-  * Input: userID. 
-  * Return: Password
+  * Method: POST
+  * Route: /login
+  * Input: JSONT({userID, password}). 
+  * Return: JSONT({loginSucess})
+    * Value is Boolean, True or False
 
 **_API name: Register ._** 
   * Method: POST
