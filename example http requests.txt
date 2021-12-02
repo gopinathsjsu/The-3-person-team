@@ -15,3 +15,6 @@ curl -i -H "Content-Type: application/json" -X POST -d '{"flightNum":"DL165", "e
 
 Edit reservation:
 curl -i -H "Content-Type: application/json" -X POST -d '{"email":"xinyu.li@sjsu.edu", "reservationNumber":1, "seatRow":2, "seatLetter":"C"}' http://localhost:5000/order/update
+
+Cancel reservation:
+curl -i -H "Content-Type: application/json" -X POST -d '{"email":"xinyu.li@sjsu.edu", "reservationNumber":3}' http://localhost:5000/order/cancel
