@@ -54,17 +54,11 @@ def login_page():
     response.headers.add('Access-Control-Allow-Origin', '*')
     return response
 
-@app.route('/getInfo/<int:userID>', methods=['GET'])
+@app.route('/getInfo/<string:userID>', methods=['GET'])
 def user_page(userID):
-    conn = MySQLdb.connect (host = "mysql-db-instance-2.c9wxfdtpfr4m.us-east-1.rds.amazonaws.com",
-                        user = USERNAME,
-                        passwd = PASSWORD,
-                        db = DB_NAME, 
-			port = 3306)
+    conn = connect_db()
     cursor = conn.cursor()
-    
-    #TODO
-    statement = "SELECT Password FROM User WHERE userID = userID"
+    statement = "SELECT * FROM User WHERE UserID = '"+userID+"'"
     #print(statement)
     
     cursor.execute(statement)
@@ -76,22 +70,20 @@ def user_page(userID):
     conn.close()    
 
     response = jsonify(
-        password=result[0]
+        Email=result[0]
+        firstName=result[2]
+        lastName=result[3]
+        userType=result[5]
     )
     response.headers.add('Access-Control-Allow-Origin', '*')
     return response
 
-@app.route('/getRewards/<int:userID>', methods=['GET'])
+@app.route('/getRewards/<string:userID>', methods=['GET'])
 def reward_page(userID):
-    conn = MySQLdb.connect (host = "mysql-db-instance-2.c9wxfdtpfr4m.us-east-1.rds.amazonaws.com",
-                        user = USERNAME,
-                        passwd = PASSWORD,
-                        db = DB_NAME, 
-			port = 3306)
+    conn = connect_db()
     cursor = conn.cursor()
-    
-    #TODO
-    statement = "SELECT Rewards FROM User WHERE userID = userID"
+
+    statement = "SELECT Rewards FROM User WHERE UserID = '"+userID+"'"
     #print(statement)
     
     cursor.execute(statement)
@@ -103,7 +95,7 @@ def reward_page(userID):
     conn.close()    
 
     response = jsonify(
-        password=result[0]
+        rewards=result[0]
     )
     response.headers.add('Access-Control-Allow-Origin', '*')
     return response
