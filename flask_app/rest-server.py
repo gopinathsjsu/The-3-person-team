@@ -27,7 +27,7 @@ def convert_timedelta(timedelta):
 
 @app.route('/', methods=['GET', 'POST'])
 def welcome():
-    return "Hello World!"
+    return "Hello World! v1"
 
 @app.route('/login', methods=['POST'])
 def login_page():
@@ -203,16 +203,16 @@ def flight_results_page():
     flightlist=[]
     for item in results:
         flight={}
-        if item[8] >= adults: #availableSeats
+        if item[8] >= int(adults): #availableSeats
             flight['flightNumber'] = item[0]
             flight['Start'] = item[1]
             flight['Destination'] = item[2]
-            flight['startDate'] = item[3]
+            flight['startDate'] = str(item[3])
             flight['startTime'] = convert_timedelta(item[4])
-            flight['arrivalDate'] = item[5]
+            flight['arrivalDate'] = str(item[5])
             flight['arrivalTime'] = convert_timedelta(item[6])
-            flight['Price'] = item[7]
-            flight['availableSeats'] = item[8]
+            flight['Price'] = str(item[7])
+            flight['availableSeats'] = str(item[8])
             flightlist.append(flight)
     
     # print("query result: ", result)
@@ -302,11 +302,11 @@ def purchase_ticket_page():
     cursor.execute("SELECT MAX(reservationNumber) from Reservation")
     reservationNumber = cursor.fetchone()[0] + 1
     
-    statement = "INSERT INTO Reservation VALUES( "+str(reservationNumber)+", '"+email+"', "+str(seatRow)+", '"+seatLetter+"', '"+flightNumber+"', '"+payment+"', '"+UserID+"')"
+    statement = "INSERT INTO Reservation VALUES( "+str(reservationNumber)+", '"+email+"', "+seatRow+", '"+seatLetter+"', '"+flightNumber+"', '"+payment+"', '"+UserID+"')"
     
     cursor.execute(statement)
     
-    seat_statement = "UPDATE Seat SET Passenger = '"+UserID+"' WHERE seatRow = "+str(seatRow)+" AND seatLetter = '"+seatLetter+"' AND flightNumber = '"+flightNumber+"'"
+    seat_statement = "UPDATE Seat SET Passenger = '"+UserID+"' WHERE seatRow = "+seatRow+" AND seatLetter = '"+seatLetter+"' AND flightNumber = '"+flightNumber+"'"
     #print(seat_statement)
     
     cursor.execute(seat_statement)
@@ -320,7 +320,7 @@ def purchase_ticket_page():
     cursor.close()
     conn.close()       
 
-    response = jsonify({'reservationNumber': reservationNumber})
+    response = jsonify({'reservationNumber': str(reservationNumber)})
     response.headers.add('Access-Control-Allow-Origin', '*')
     
     return response
@@ -340,16 +340,16 @@ def edit_reservation_page():
     cursor.execute("SELECT UserID from User WHERE Email = '"+email+"'")
     UserID = cursor.fetchone()[0]
     
-    cursor.execute("SELECT flightNumber, seatRow, seatLetter from Reservation WHERE reservationNumber = '"+str(reservationNumber)+"'")
+    cursor.execute("SELECT flightNumber, seatRow, seatLetter from Reservation WHERE reservationNumber = '"+reservationNumber+"'")
     result = cursor.fetchone()
     flightNumber = result[0]
     old_seat_row = result[1]
     old_seat_letter = result[2]
     
-    statement = "UPDATE Reservation SET Email = '"+email+"', seatRow = "+str(seatRow)+", seatLetter = '"+seatLetter+"' WHERE reservationNumber = "+str(reservationNumber)
+    statement = "UPDATE Reservation SET Email = '"+email+"', seatRow = "+seatRow+", seatLetter = '"+seatLetter+"' WHERE reservationNumber = "+reservationNumber
     cursor.execute(statement)
     
-    seat_statement = "UPDATE Seat SET Passenger = '"+UserID+"' WHERE seatRow = "+str(seatRow)+" AND seatLetter = '"+seatLetter+"' AND flightNumber = '"+flightNumber+"'"
+    seat_statement = "UPDATE Seat SET Passenger = '"+UserID+"' WHERE seatRow = "+seatRow+" AND seatLetter = '"+seatLetter+"' AND flightNumber = '"+flightNumber+"'"
     #print(seat_statement)
     cursor.execute(seat_statement)
     
@@ -387,13 +387,13 @@ def cancel_reservation_page():
     cursor.execute("SELECT UserID from User WHERE Email = '"+email+"'")
     UserID = cursor.fetchone()[0]
     
-    cursor.execute("SELECT flightNumber, seatRow, seatLetter from Reservation WHERE reservationNumber = '"+str(reservationNumber)+"'")
+    cursor.execute("SELECT flightNumber, seatRow, seatLetter from Reservation WHERE reservationNumber = '"+reservationNumber+"'")
     result = cursor.fetchone()
     flightNumber = result[0]
     old_seat_row = result[1]
     old_seat_letter = result[2]
     
-    reservation_statement = "DELETE FROM Reservation WHERE reservationNumber = "+str(reservationNumber)
+    reservation_statement = "DELETE FROM Reservation WHERE reservationNumber = "+reservationNumber
     cursor.execute(reservation_statement)
     
     old_seat_statement = "UPDATE Seat SET Passenger = NULL WHERE seatRow = "+str(old_seat_row)+" AND seatLetter = '"+old_seat_letter+"' AND flightNumber = '"+flightNumber+"'"
