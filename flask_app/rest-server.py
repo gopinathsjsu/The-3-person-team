@@ -328,6 +328,48 @@ def purchase_ticket_page():
     response.headers.add('Access-Control-Allow-Origin', '*')
     
     return response
+    
+@app.route('/order/update', methods=['POST'])
+def edit_reservation_page():
+    conn = connect_db()
+
+    email = request.json['email']
+    reservationNumber = request.json['reservationNumber']
+    seatRow = request.json['seatRow']
+    seatLetter = request.json['seatLetter']
+    
+    #print(start, destination, startDate)
+    cursor = conn.cursor()
+    
+    cursor.execute("SELECT UserID from User WHERE Email = '"+email+"'")
+    UserID = cursor.fetchone()[0]
+    
+    cursor.execute("SELECT flightNumber, seatRow, seatLetter from Reservation WHERE reservationNumber = '"+str(reservationNumber)+"'")
+    result = cursor.fetchone()
+    flightNumber = result[0]
+    old_seat_row = result[1]
+    old_seat_letter = result[2]
+    
+    statement = "UPDATE Reservation SET Email = '"+email+"', seatRow = "+str(seatRow)+", seatLetter = '"+seatLetter+"' WHERE reservationNumber = "+str(reservationNumber)
+    cursor.execute(statement)
+    
+    seat_statement = "UPDATE Seat SET Passenger = '"+UserID+"' WHERE seatRow = "+str(seatRow)+" AND seatLetter = '"+seatLetter+"' AND flightNumber = '"+flightNumber+"'"
+    #print(seat_statement)
+    cursor.execute(seat_statement)
+    
+    old_seat_statement = "UPDATE Seat SET Passenger = NULL WHERE seatRow = "+str(old_seat_row)+" AND seatLetter = '"+old_seat_letter+"' AND flightNumber = '"+flightNumber+"'"
+    #print(seat_statement)
+    cursor.execute(old_seat_statement)
+    
+    conn.commit()
+    
+    cursor.close()
+    conn.close()       
+
+    response = jsonify({'reservationNumber': reservationNumber})
+    response.headers.add('Access-Control-Allow-Origin', '*')
+    
+    return response
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', debug=True, port=5000)
