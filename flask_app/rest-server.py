@@ -334,33 +334,47 @@ def purchase_ticket_page():
     cursor = conn.cursor()
     
     cursor.execute("SELECT UserID from User WHERE Email = '"+email+"'")
-    UserID = cursor.fetchone()[0]
+    result = cursor.fetchone()
+    
+    if result:
+        UserID = result[0]
+    else:
+        response = jsonify({'reservationNumber': "User not found"})
+        cursor.close()
+        conn.close()
+        return response
     
     cursor.execute("SELECT MAX(reservationNumber) from Reservation")
     reservationNumber = cursor.fetchone()[0] + 1
     
-    statement = "INSERT INTO Reservation VALUES( "+str(reservationNumber)+", '"+email+"', "+seatRow+", '"+seatLetter+"', '"+flightNumber+"', '"+payment+"', '"+UserID+"')"
+    try:
+        statement = "INSERT INTO Reservation VALUES( "+str(reservationNumber)+", '"+email+"', "+seatRow+", '"+seatLetter+"', '"+flightNumber+"', '"+payment+"', '"+UserID+"')"
+        cursor.execute(statement)
+        conn.commit()
+        
+    except MySQLdb.Error as e:
+        conn.rollback()
+        print(e)
+        response = jsonify({'reservationNumber': "Database error when creating new reservation. Please check input"})
+        
+    else:
+        seat_statement = "UPDATE Seat SET Passenger = '"+UserID+"' WHERE seatRow = "+seatRow+" AND seatLetter = '"+seatLetter+"' AND flightNumber = '"+flightNumber+"'"
+        #print(seat_statement)
+        cursor.execute(seat_statement)
+                
+        flight_statement = "UPDATE Flight SET availableSeats = availableSeats-1 WHERE flightNumber = '"+flightNumber+"'"
+        cursor.execute(flight_statement)
+                
+        conn.commit()
+                
+        response = jsonify({'reservationNumber': str(reservationNumber)})
     
-    cursor.execute(statement)
-    
-    seat_statement = "UPDATE Seat SET Passenger = '"+UserID+"' WHERE seatRow = "+seatRow+" AND seatLetter = '"+seatLetter+"' AND flightNumber = '"+flightNumber+"'"
-    #print(seat_statement)
-    
-    cursor.execute(seat_statement)
-    
-    flight_statement = "UPDATE Flight SET availableSeats = availableSeats-1 WHERE flightNumber = '"+flightNumber+"'"
-    
-    cursor.execute(flight_statement)
-    
-    conn.commit()
-    
-    cursor.close()
-    conn.close()       
-
-    response = jsonify({'reservationNumber': str(reservationNumber)})
-    response.headers.add('Access-Control-Allow-Origin', '*')
-    
-    return response
+    finally:
+       cursor.close()
+       conn.close()
+       response.headers.add('Access-Control-Allow-Origin', '*')
+            
+       return response
     
 @app.route('/order/update', methods=['POST'])
 def edit_reservation_page():
@@ -375,41 +389,84 @@ def edit_reservation_page():
     cursor = conn.cursor()
     
     cursor.execute("SELECT UserID from User WHERE Email = '"+email+"'")
-    UserID = cursor.fetchone()[0]
+    result = cursor.fetchone()
+    
+    #validate UserID
+    if result:
+        UserID = result[0]
+    else:
+        response = {
+            "email":"Invalid User",
+            "reservationNumber":"Invalid User",
+            "seatRow":"Invalid User",
+            "seatLetter":"Invalid User"
+        }
+        response = jsonify(response)
+        cursor.close()
+        conn.close()
+        return response
     
     cursor.execute("SELECT flightNumber, seatRow, seatLetter from Reservation WHERE reservationNumber = '"+reservationNumber+"'")
     result = cursor.fetchone()
-    flightNumber = result[0]
-    old_seat_row = result[1]
-    old_seat_letter = result[2]
     
-    statement = "UPDATE Reservation SET Email = '"+email+"', seatRow = "+seatRow+", seatLetter = '"+seatLetter+"' WHERE reservationNumber = "+reservationNumber
-    cursor.execute(statement)
+    #validate reservationNumber
+    if result:
+        flightNumber = result[0]
+        old_seat_row = result[1]
+        old_seat_letter = result[2]
+    else:
+        response = {
+            "email":"Invalid reservation",
+            "reservationNumber":"Invalid reservation",
+            "seatRow":"Invalid reservation",
+            "seatLetter":"Invalid reservation"
+        }
+        response = jsonify(response)
+        cursor.close()
+        conn.close()
+        return response
     
-    seat_statement = "UPDATE Seat SET Passenger = '"+UserID+"' WHERE seatRow = "+seatRow+" AND seatLetter = '"+seatLetter+"' AND flightNumber = '"+flightNumber+"'"
-    #print(seat_statement)
-    cursor.execute(seat_statement)
+    try:
+        statement = "UPDATE Reservation SET Email = '"+email+"', seatRow = "+seatRow+", seatLetter = '"+seatLetter+"' WHERE reservationNumber = "+reservationNumber
+        cursor.execute(statement)
+        conn.commit()
+        
+    except MySQLdb.Error as e:
+        conn.rollback()
+        print(e)
+        response = {
+            "email":"Database error when updating reservation. Please check input",
+            "reservationNumber":"Database error when updating reservation. Please check input",
+            "seatRow":"Database error when updating reservation. Please check input",
+            "seatLetter":"Database error when updating reservation. Please check input"
+        }
+        response = jsonify(response)
     
-    old_seat_statement = "UPDATE Seat SET Passenger = NULL WHERE seatRow = "+str(old_seat_row)+" AND seatLetter = '"+old_seat_letter+"' AND flightNumber = '"+flightNumber+"'"
-    #print(seat_statement)
-    cursor.execute(old_seat_statement)
-    
-    conn.commit()
-    
-    cursor.close()
-    conn.close()  
+    else:
+        seat_statement = "UPDATE Seat SET Passenger = '"+UserID+"' WHERE seatRow = "+seatRow+" AND seatLetter = '"+seatLetter+"' AND flightNumber = '"+flightNumber+"'"
+        #print(seat_statement)
+        cursor.execute(seat_statement)
+        
+        old_seat_statement = "UPDATE Seat SET Passenger = NULL WHERE seatRow = "+str(old_seat_row)+" AND seatLetter = '"+old_seat_letter+"' AND flightNumber = '"+flightNumber+"'"
+        #print(seat_statement)
+        cursor.execute(old_seat_statement)
+        
+        conn.commit()
+        
+        response = {
+            "email":email,
+            "reservationNumber":reservationNumber,
+            "seatRow":seatRow,
+            "seatLetter":seatLetter
+        }
 
-    response = {
-        "email":email,
-        "reservationNumber":reservationNumber,
-        "seatRow":seatRow,
-        "seatLetter":seatLetter
-    }
-
-    response = jsonify(response)
-    response.headers.add('Access-Control-Allow-Origin', '*')
-    
-    return response
+        response = jsonify(response)
+     
+    finally:
+        cursor.close()
+        conn.close()  
+        response.headers.add('Access-Control-Allow-Origin', '*')
+        return response
     
 @app.route('/order/cancel', methods=['POST'])
 def cancel_reservation_page():
@@ -422,13 +479,38 @@ def cancel_reservation_page():
     cursor = conn.cursor()
     
     cursor.execute("SELECT UserID from User WHERE Email = '"+email+"'")
-    UserID = cursor.fetchone()[0]
+    result = cursor.fetchone()
+    
+    #validate UserID
+    if result:
+        UserID = result[0]
+    else:
+        response = {
+            "email":"Invalid User",
+            "reservationNumber":"Invalid User"
+        }
+        response = jsonify(response)
+        cursor.close()
+        conn.close()
+        return response
     
     cursor.execute("SELECT flightNumber, seatRow, seatLetter from Reservation WHERE reservationNumber = '"+reservationNumber+"'")
     result = cursor.fetchone()
-    flightNumber = result[0]
-    old_seat_row = result[1]
-    old_seat_letter = result[2]
+    
+    #validate reservationNumber
+    if result:
+        flightNumber = result[0]
+        old_seat_row = result[1]
+        old_seat_letter = result[2]
+    else:
+        response = {
+            "email":"Invalid reservation",
+            "reservationNumber":"Invalid reservation"
+        }
+        response = jsonify(response)
+        cursor.close()
+        conn.close()
+        return response
     
     reservation_statement = "DELETE FROM Reservation WHERE reservationNumber = "+reservationNumber
     cursor.execute(reservation_statement)
