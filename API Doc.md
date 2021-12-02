@@ -67,7 +67,7 @@
   * Input: JSON({email, reservationNumber, seatRow, seatLetter}). 
   * Return: JSON({email, reservationNumber, seatRow, seatLetter})
  
-API name: cancelReservation . 
+**_API name: cancelReservation ._** 
   * Method: POST
   * Route: /order/cancel
   * Input: JSON({email, reservationNumber}). 
