@@ -15,13 +15,13 @@
 **_API name: getInfo ._** 
   * Method: POST
   * Method: GET
-  * Route: /(userID)
+  * Route: /getInfo/(userID)
   * Input: UserID
   * Return: JSON({Email, firstName, lastName, userType})
 
 **_API name: getRewards._**
   * Method: GET
-  * Route: /(userID)/rewards
+  * Route: /getRewards/(userID)
   * Input: UserID
   * Return: JSON({Rewards})
 
@@ -51,13 +51,13 @@
 
 **_API name: findOrder ._**
   * Method: GET
-  * Route: /order/(reservationNumber)
+  * Route: /findorder/(reservationNumber)
   * Input: reservationNumber. 
   * Return: JSON({Email, flightNumber, seatRow, seatLetter, Payment})
   
 **_API name: findOrders ._**
   * Method: GET
-  * Route: /order/(userID)
+  * Route: /findorders/(userID)
   * Input: userID. 
   * Return: JSON(list of orders: {reservationNumber, Email, flightNumber, seatRow, seatLetter, Payment})
 
