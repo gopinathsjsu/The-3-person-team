@@ -13,6 +13,7 @@
     * UserID: first part of email, before @ 
 
 **_API name: getInfo ._** 
+  * Method: POST
   * Method: GET
   * Route: /(userID)
   * Input: UserID
@@ -48,13 +49,13 @@
   * Input: JSON({flightNum, email, seatRow, seatLetter, payment})
   * Return: JSON({reservationNumber})
 
-API name: findOrder . 
+**_API name: findOrder ._**
   * Method: GET
   * Route: /order/(reservationNumber)
   * Input: reservationNumber. 
   * Return: JSON({Email, flightNumber, seatRow, seatLetter, Payment})
   
-API name: findOrders . 
+**_API name: findOrders ._**
   * Method: GET
   * Route: /order/(userID)
   * Input: userID. 
