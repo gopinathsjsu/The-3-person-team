@@ -360,9 +360,59 @@ def edit_reservation_page():
     conn.commit()
     
     cursor.close()
-    conn.close()       
+    conn.close()  
 
-    response = jsonify({'reservationNumber': reservationNumber})
+    response = {
+        "email":email,
+        "reservationNumber":reservationNumber,
+        "seatRow":seatRow,
+        "seatLetter":seatLetter
+    }
+
+    response = jsonify(response)
+    response.headers.add('Access-Control-Allow-Origin', '*')
+    
+    return response
+    
+@app.route('/order/cancel', methods=['POST'])
+def cancel_reservation_page():
+    conn = connect_db()
+
+    email = request.json['email']
+    reservationNumber = request.json['reservationNumber']
+    
+    #print(start, destination, startDate)
+    cursor = conn.cursor()
+    
+    cursor.execute("SELECT UserID from User WHERE Email = '"+email+"'")
+    UserID = cursor.fetchone()[0]
+    
+    cursor.execute("SELECT flightNumber, seatRow, seatLetter from Reservation WHERE reservationNumber = '"+str(reservationNumber)+"'")
+    result = cursor.fetchone()
+    flightNumber = result[0]
+    old_seat_row = result[1]
+    old_seat_letter = result[2]
+    
+    reservation_statement = "DELETE FROM Reservation WHERE reservationNumber = "+str(reservationNumber)
+    cursor.execute(reservation_statement)
+    
+    old_seat_statement = "UPDATE Seat SET Passenger = NULL WHERE seatRow = "+str(old_seat_row)+" AND seatLetter = '"+old_seat_letter+"' AND flightNumber = '"+flightNumber+"'"
+    #print(seat_statement)
+    cursor.execute(old_seat_statement)
+    
+    flight_statement = "UPDATE Flight SET availableSeats = availableSeats+1 WHERE flightNumber = '"+flightNumber+"'"
+    cursor.execute(flight_statement)
+    
+    conn.commit()
+    
+    cursor.close()
+    conn.close()       
+    
+    response = {
+        "email":email,
+        "reservationNumber":reservationNumber
+    }
+    response = jsonify(response)
     response.headers.add('Access-Control-Allow-Origin', '*')
     
     return response
