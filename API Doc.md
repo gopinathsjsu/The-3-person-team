@@ -60,7 +60,7 @@ API name: findOrders .
   * Input: userID. 
   * Return: JSON(list of orders: {reservationNumber, Email, flightNumber, seatRow, seatLetter, Payment})
 
-API name: editReservation . 
+**_API name: editReservation ._** 
   * Method: POST
   * Route: /order/update
   * Input: JSON({email, reservationNumber, seatRow, seatLetter}). 
