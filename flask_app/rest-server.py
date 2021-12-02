@@ -35,7 +35,7 @@ def internal_error(error):
 
 @app.route('/', methods=['GET', 'POST'])
 def welcome():
-    return "Hello World! v2"
+    return "Hello World! v3"
 
 @app.route('/login', methods=['POST'])
 def login_page():
