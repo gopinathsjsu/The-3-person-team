@@ -12,3 +12,6 @@ curl -i -H "Content-Type: application/json" -X POST -d '{"UserID":"xyl","passwor
 
 Purchase:
 curl -i -H "Content-Type: application/json" -X POST -d '{"flightNum":"DL165", "email":"xinyu.li@sjsu.edu", "seatRow":3, "seatLetter":"A", "payment":"qwert"}' http://localhost:5000/purchase
+
+Edit reservation:
+curl -i -H "Content-Type: application/json" -X POST -d '{"email":"xinyu.li@sjsu.edu", "reservationNumber":1, "seatRow":2, "seatLetter":"C"}' http://localhost:5000/order/update
