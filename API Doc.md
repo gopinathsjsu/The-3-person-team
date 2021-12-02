@@ -12,13 +12,13 @@
   * Return: JSON({UserID})
     * UserID: first part of email, before @ 
 
-API name: getInfo .
+**_API name: getInfo ._** 
   * Method: GET
   * Route: /(userID)
   * Input: UserID
   * Return: JSON({Email, firstName, lastName, userType})
 
-API name: getRewards.
+**_API name: getRewards._**
   * Method: GET
   * Route: /(userID)/rewards
   * Input: UserID

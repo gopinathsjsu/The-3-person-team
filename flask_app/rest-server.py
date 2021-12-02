@@ -133,18 +133,12 @@ def search_seat(flightNumber):
     response.headers.add('Access-Control-Allow-Origin', '*')
     return response
 
+
 @app.route('/findorder/<string:reservationNumber>', methods=['GET'])
 def find_order(reservationNumber):
-    conn = MySQLdb.connect (host = "mysql-db-instance-2.c9wxfdtpfr4m.us-east-1.rds.amazonaws.com",
-                        user = USERNAME,
-                        passwd = PASSWORD,
-                        db = DB_NAME, 
-			port = 3306)
+    conn = connect_db()
     cursor = conn.cursor()
-    
-    #TODO
-    statement = "SELECT order FROM order WHERE reservationNumber = reservationNumber"
-    #print(statement)
+    statement = "SELECT * FROM Reservation WHERE reservationNumber = '"+reservationNumber+"'"
     
     cursor.execute(statement)
     result = cursor.fetchone()
@@ -155,37 +149,45 @@ def find_order(reservationNumber):
     conn.close()    
 
     response = jsonify(
-        password=result[0]
+        Email=result[1],
+        flightNumber=result[4], 
+        seatRow=result[2], 
+        seatLetter=result[3],
+        Payment=result[5],
     )
     response.headers.add('Access-Control-Allow-Origin', '*')
     return response
 
-@app.route('/findorders/<int:userID>', methods=['GET'])
+@app.route('/findorders/<string:userID>', methods=['GET'])
 def find_orders(userID):
-    conn = MySQLdb.connect (host = "mysql-db-instance-2.c9wxfdtpfr4m.us-east-1.rds.amazonaws.com",
-                        user = USERNAME,
-                        passwd = PASSWORD,
-                        db = DB_NAME, 
-			port = 3306)
+    conn = connect_db()
     cursor = conn.cursor()
-    
-    #TODO
-    statement = "SELECT orders FROM order WHERE userID = userID"
-    #print(statement)
-    
+
+    statement = "SELECT * FROM Reservation WHERE UserID = '"+userID+"'"
+ 
     cursor.execute(statement)
-    result = cursor.fetchone()
+    result = cursor.fetchall()
     
     print("query result: ", result)
     
+    orderlist=[]
+    for item in result:
+        order={}
+        order['Email']=item[1]
+        order['flightNumber']=item[4]
+        order['seatRow']=item[2]
+        order['seatLetter']=item[3]
+        order['Payment']=item[5]
+        orderlist.append(order)
+
     cursor.close()
     conn.close()    
 
-    response = jsonify(
-        password=result[0]
+    response = jsonify({'orders':orderlist}
     )
     response.headers.add('Access-Control-Allow-Origin', '*')
     return response
+
     
 @app.route('/search-results', methods=['POST'])
 def flight_results_page():
