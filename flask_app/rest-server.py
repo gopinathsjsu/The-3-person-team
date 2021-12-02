@@ -1,6 +1,7 @@
 #!flask/bin/python
 from flask import Flask, jsonify, abort, request, make_response, url_for
 from flask import render_template, redirect
+from flask_cors import CORS
 
 import MySQLdb
 
@@ -9,6 +10,7 @@ PASSWORD = 'password'
 DB_NAME = 'mytestdb'
     
 app = Flask(__name__, static_url_path="")
+CORS(app)
 
 def connect_db():
     return MySQLdb.connect (host = "mysql-db-instance-2.c9wxfdtpfr4m.us-east-1.rds.amazonaws.com",
@@ -70,9 +72,9 @@ def user_page(userID):
     conn.close()    
 
     response = jsonify(
-        Email=result[0]
-        firstName=result[2]
-        lastName=result[3]
+        Email=result[0],
+        firstName=result[2],
+        lastName=result[3],
         userType=result[5]
     )
     response.headers.add('Access-Control-Allow-Origin', '*')
