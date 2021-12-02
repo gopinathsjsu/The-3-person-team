@@ -24,10 +24,18 @@ def convert_timedelta(timedelta):
     m, s = divmod(seconds, 60)
     h, m = divmod(m, 60)
     return '{:d}:{:02d}:{:02d}'.format(h, m, s)
+    
+@app.errorhandler(404)
+def not_found_error(error):
+    return "404 Not Found"
+    
+@app.errorhandler(500)
+def internal_error(error):
+    return "500 Internal Server Error"
 
 @app.route('/', methods=['GET', 'POST'])
 def welcome():
-    return "Hello World! v1"
+    return "Hello World! v2"
 
 @app.route('/login', methods=['POST'])
 def login_page():
@@ -48,7 +56,10 @@ def login_page():
     cursor.close()
     conn.close()  
     
-    login_result = result[0] == password
+    if result:
+        login_result = result[0] == password
+    else:
+        login_result = "No user found"
 
     response = jsonify(
         {"loginSucess": login_result})
@@ -66,17 +77,26 @@ def user_page(userID):
     cursor.execute(statement)
     result = cursor.fetchone()
     
-    print("query result: ", result)
+    #print("query result: ", result)
     
     cursor.close()
     conn.close()    
-
-    response = jsonify(
-        Email=result[0],
-        firstName=result[2],
-        lastName=result[3],
-        userType=result[5]
-    )
+    
+    if result:
+        response = jsonify(
+            Email=result[0],
+            firstName=result[2],
+            lastName=result[3],
+            userType=result[5]
+        )
+    else:
+        response = jsonify(
+            Email="Not found",
+            firstName="Not found",
+            lastName="Not found",
+            userType="Not found"
+        )
+        
     response.headers.add('Access-Control-Allow-Origin', '*')
     return response
 
@@ -91,14 +111,20 @@ def reward_page(userID):
     cursor.execute(statement)
     result = cursor.fetchone()
     
-    print("query result: ", result)
+    #print("query result: ", result)
     
     cursor.close()
     conn.close()    
-
-    response = jsonify(
-        rewards=result[0]
-    )
+    
+    if result:
+        response = jsonify(
+            rewards=result[0]
+        )
+    else:
+        response = jsonify(
+            rewards="Record not found"
+        )
+        
     response.headers.add('Access-Control-Allow-Origin', '*')
     return response
 
@@ -142,18 +168,28 @@ def find_order(reservationNumber):
     cursor.execute(statement)
     result = cursor.fetchone()
     
-    print("query result: ", result)
+    #print("query result: ", result)
     
     cursor.close()
     conn.close()    
-
-    response = jsonify(
-        Email=result[1],
-        flightNumber=result[4], 
-        seatRow=result[2], 
-        seatLetter=result[3],
-        Payment=result[5],
-    )
+    
+    if result:
+        response = jsonify(
+            Email=result[1],
+            flightNumber=result[4], 
+            seatRow=result[2], 
+            seatLetter=result[3],
+            Payment=result[5],
+        )
+    else:
+        response = jsonify(
+            Email="Invalid order",
+            flightNumber="Invalid order", 
+            seatRow="Invalid order", 
+            seatLetter="Invalid order",
+            Payment="Invalid order",
+        )
+       
     response.headers.add('Access-Control-Allow-Origin', '*')
     return response
 
@@ -168,6 +204,7 @@ def find_orders(userID):
     orderlist=[]
     for item in result:
         order={}
+        order['reservationNumber']=item[0]
         order['Email']=item[1]
         order['flightNumber']=item[4]
         order['seatRow']=item[2]
