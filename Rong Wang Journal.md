@@ -1,4 +1,4 @@
-## Oct, 25 2021
+## WEEK 3
 What tasks did I work on / complete?
 
 Confirmed the tech stack to be used in this project
@@ -11,7 +11,7 @@ What tasks are blocked waiting on another team member?
 
 None
 
-## Oct, 18 2021
+## WEEK 2
 What tasks did I work on / complete?
 
 Collect and review project requirement
@@ -25,7 +25,7 @@ What tasks are blocked waiting on another team member?
 
 None
 
-## Oct, 11 2021
+## WEEK 1
 What tasks did I work on / complete? 
 
 Go through the requirements of this project
