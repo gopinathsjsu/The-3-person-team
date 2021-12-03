@@ -56,3 +56,4 @@ Feedback: we provide our feedback to teammate and listen to them carefully. We m
 
 #### Architecture Diagram
 
+![architecture_diagram](https://github.com/gopinathsjsu/The-3-person-team/blob/master/architecture_diagram.png?raw=true)
