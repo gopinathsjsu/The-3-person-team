@@ -1,3 +1,63 @@
+##### Nov, 22 2021
+
+- What tasks did I work on / complete?
+
+  finish documentation  
+
+- What am I planning to work on next?
+
+  Project finished 
+
+- What tasks are blocked waiting on another team member?
+
+  None
+
+##### 
+
+##### Nov, 15 2021
+
+- What tasks did I work on / complete?
+
+  working on documentation 
+
+- What am I planning to work on next?
+
+  Keep working on documentation 
+
+- What tasks are blocked waiting on another team member?
+
+  None
+
+##### Nov, 8 2021
+
+- What tasks did I work on / complete?
+
+  finish most part of the backend  
+
+- What am I planning to work on next?
+
+  start writing documentation  
+
+- What tasks are blocked waiting on another team member?
+
+  None
+
+##### Nov, 1 2021
+
+- What tasks did I work on / complete?
+
+  working on the code of backend  
+
+- What am I planning to work on next?
+
+  keep working on the backend
+
+- What tasks are blocked waiting on another team member?
+
+  None
+
+##### 
+
 ##### Oct, 25 2021
 
 - What tasks did I work on / complete?
