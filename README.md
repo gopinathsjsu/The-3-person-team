@@ -4,11 +4,11 @@
 
 ### Team member 
 
-Boxiang Guo
+Boxiang Guo (back-end)
 
-Xinyu Li
+Xinyu Li (back-end)
 
-Rong Wang
+Rong Wang (front-end)
 
 ### Meeting schedule
 
