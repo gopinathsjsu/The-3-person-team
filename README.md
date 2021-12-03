@@ -52,7 +52,7 @@ Feedback: we provide our feedback to teammate and listen to them carefully. We m
 
 ##### Database Relational Schema
 
-![Database Relational Schema](https://github.com/gopinathsjsu/The-3-person-team/raw/master/db_designs/Relational%20Schema.png)
+![Database Relational Schema](https://github.com/gopinathsjsu/The-3-person-team/raw/master/db_designs/Schema.drawio.png)
 
 #### Architecture Diagram
 
