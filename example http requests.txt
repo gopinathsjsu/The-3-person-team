@@ -18,3 +18,6 @@ curl -i -H "Content-Type: application/json" -X POST -d '{"email":"xinyu.li@sjsu.
 
 Cancel reservation:
 curl -i -H "Content-Type: application/json" -X POST -d '{"email":"xinyu.li@sjsu.edu", "reservationNumber":3}' http://localhost:5000/order/cancel
+
+Register:
+curl -i -H "Content-Type: application/json" -X POST -d '{"email":"123@sjsu.edu", "password":"key", "firstname":"fst", "lastname":"lst"}' http://localhost:5000/register
